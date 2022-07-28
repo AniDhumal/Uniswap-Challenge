@@ -7,17 +7,32 @@ import {
   ethers,
   getJsonRpcUrl,
 } from "forta-agent";
+import { utils } from "mocha";
 import {
   SWAP_EVENT,
   POOL_ABI,
   FACTORY_ABI,
   UNISWAP_FACTORY,
+  INITCODE_HASH,
 } from "./constants";
 
 let findingsCount = 0;
 
 let provider: ethers.providers.JsonRpcProvider =
   new ethers.providers.JsonRpcProvider(getJsonRpcUrl());
+
+const getCreate2Address = async (
+  factoryAddress: string,
+  token0: string,
+  token1: string,
+  fee: number
+) => {
+  const abiCoder = new ethers.utils.AbiCoder();
+  let salt = ethers.utils.keccak256(
+    abiCoder.encode(["address", "address", "uint24"], [token0, token1, fee])
+  );
+  return ethers.utils.getCreate2Address(factoryAddress, salt, INITCODE_HASH);
+};
 
 //function to check if the pool is a uniswap pool
 const addressIsUniswap = async (argPoolAddress: string) => {
@@ -32,9 +47,13 @@ const addressIsUniswap = async (argPoolAddress: string) => {
   let tokenA = await poolContract.token0();
   let tokenB = await poolContract.token1();
   let fee = await poolContract.fee();
-  let poolAddress = await factoryContract.getPool(tokenA, tokenB, fee);
+  let poolAddress = await getCreate2Address(
+    UNISWAP_FACTORY,
+    tokenA,
+    tokenB,
+    fee
+  );
   poolAddress = String(poolAddress).toLowerCase();
-
   if (poolAddress.toLowerCase() == argPoolAddress.toLowerCase()) {
     return [true, tokenA, tokenB];
   } else return [false, "", ""];
