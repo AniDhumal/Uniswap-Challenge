@@ -58,7 +58,7 @@ const addressIsUniswap = async (argPoolAddress: string) => {
     return [true, tokenA, tokenB];
   } else return [false, "", ""];
 };
-const handleTransaction: HandleTransaction = async (
+export const handleTransaction: HandleTransaction = async (
   txEvent: TransactionEvent
 ) => {
   const findings: Finding[] = [];
