@@ -2,7 +2,7 @@
 
 ## Description
 
-This agent detects a swap from Uniswap pools
+This Bot detects a swap from Uniswap pools
 
 ## Supported Chains
 
@@ -16,6 +16,13 @@ Describe each of the type of alerts fired by this agent
   - Fired when a swap is detected from a Uniswap Pool
   - Severity is always set to "low"
   - Type is always set to "info"
+  - Metadata:
+    - `recipient`:Adress of the recipient
+    - `token0`: Address of token swapped from
+    - `amount0`: Amount of token0 swapped
+    - `token1`: Address of token swapped to,
+    - `amount1`: Amount of token1 swapped,
+    - `poolAddress`: Address of the Uniswap pool where swap event was detected
 
 ## Test Data
 

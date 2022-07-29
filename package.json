@@ -1,7 +1,7 @@
 {
-  "name": "forta-agent-starter",
+  "name": "forta-agent-uniswap-challenge",
   "version": "0.0.1",
-  "description": "Forta Agent Typescript starter project",
+  "description": "Forta bot to detect swap events on Uniswap V3",
   "chainIds": [
     1
   ],
@@ -21,13 +21,14 @@
     "disable": "forta-agent disable",
     "enable": "forta-agent enable",
     "keyfile": "forta-agent keyfile",
-    "test": "jest"
+    "test": "jest",
+    "format": "prettier --write \"src/**/*.ts\""
   },
   "dependencies": {
-    "forta-agent": "^0.1.9",
-    "forta-agent-tools": "^2.3.1"
+    "forta-agent": "^0.1.9"    
   },
   "devDependencies": {
+    "forta-agent-tools": "^2.3.1",
     "@types/jest": "^27.0.1",
     "@types/nodemon": "^1.19.0",
     "jest": "^27.0.6",
@@ -35,6 +36,6 @@
     "prettier": "^2.7.1",
     "ts-jest": "^27.0.3",
     "typescript": "^4.3.4"
-  },
-  "format": "prettier --write \"src/**/*.ts\""
+  }
+ 
 }
