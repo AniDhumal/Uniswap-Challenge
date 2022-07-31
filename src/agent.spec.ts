@@ -50,7 +50,6 @@ describe("Uniswap swap event agent test suite", () => {
     const findings = await handleTransaction(tx);
     expect(findings).toStrictEqual([]);
   });
-  jest.setTimeout(7000);
   it("Should detect multiple swap events", async () => {
     const tx: TransactionEvent = new TestTransactionEvent()
       .setTo(createAddress("0xa1"))

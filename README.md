@@ -10,8 +10,6 @@ This Bot detects a swap from Uniswap pools
 
 ## Alerts
 
-Describe each of the type of alerts fired by this agent
-
 - FORTA-1
   - Fired when a swap is detected from a Uniswap Pool
   - Severity is always set to "low"
@@ -26,5 +24,5 @@ Describe each of the type of alerts fired by this agent
 
 ## Test Data
 
-The agent behaviour can be verified with the following transactions:
+The bot behaviour can be verified with the following transactions:
 0xf0245dbcf59e294ac7d8234a5320b84ace280340f29f25aad372aadf6ef406b7

@@ -7,46 +7,29 @@ import {
   ethers,
   getJsonRpcUrl,
 } from "forta-agent";
-import {
-  SWAP_EVENT,
-  POOL_ABI,
-  UNISWAP_FACTORY,
-  INITCODE_HASH,
-} from "./constants";
+import { SWAP_EVENT, POOL_ABI, UNISWAP_FACTORY } from "./constants";
+import { getData, getCreate2Address } from "./utils";
+import LRUCache from "lru-cache";
 
 let provider: ethers.providers.JsonRpcProvider =
   new ethers.providers.JsonRpcProvider(getJsonRpcUrl());
 
-const getCreate2Address = async (
-  factoryAddress: string,
-  token0: string,
-  token1: string,
-  fee: number
-) => {
-  const abiCoder = new ethers.utils.AbiCoder();
-  let salt = ethers.utils.keccak256(
-    abiCoder.encode(["address", "address", "uint24"], [token0, token1, fee])
-  );
-  return ethers.utils.getCreate2Address(factoryAddress, salt, INITCODE_HASH);
-};
+export const cache: LRUCache<string, string[]> = new LRUCache<string, string[]>(
+  {
+    max: 10000,
+  }
+); //maps pool address to tokenA,tokenB,fee
 
 //function to check if the pool is a uniswap pool
 const addressIsUniswap = async (argPoolAddress: string) => {
   //this function will be called when a transaction is being handled and will return true or false based on whether the argument pool address equals to calculated create2 address
   const poolContract = new ethers.Contract(argPoolAddress, POOL_ABI, provider);
   try {
-    var tokenA = await poolContract.token0();
-    var tokenB = await poolContract.token1();
-    var fee = await poolContract.fee();
+    var [tokenA, tokenB, fee] = await getData(poolContract, argPoolAddress);
   } catch (error) {
     return [false, "", ""];
   }
-  let poolAddress = await getCreate2Address(
-    UNISWAP_FACTORY,
-    tokenA,
-    tokenB,
-    fee
-  );
+  let poolAddress = getCreate2Address(UNISWAP_FACTORY, tokenA, tokenB, fee);
   if (poolAddress.toLowerCase() == argPoolAddress.toLowerCase()) {
     return [true, tokenA, tokenB];
   } else return [false, "", ""];
